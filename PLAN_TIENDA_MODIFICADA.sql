@@ -1,0 +1,126 @@
+-- Crear la base de datos
+CREATE DATABASE IF NOT EXISTS `PLAN_TIENDA_MODIFICADA`;
+USE `PLAN_TIENDA_MODIFICADA`;
+
+-- Crear tabla REGION
+CREATE TABLE IF NOT EXISTS `REGION` (
+  `REGION_CODE` VARCHAR(50) NOT NULL PRIMARY KEY,
+  `REGION_DESCRIPT` TEXT,
+  `ACTIVO` BOOLEAN DEFAULT TRUE,
+  `FECHA_CREACION` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `TIPO_LISTA` ENUM('Norte', 'Sur', 'Este', 'Oeste') DEFAULT 'Norte',
+  `COLUMNA_UNICA` BOOLEAN DEFAULT FALSE
+);
+
+-- Crear tabla STORE
+CREATE TABLE IF NOT EXISTS `STORE` (
+  `STORE_CODE` VARCHAR(50) NOT NULL PRIMARY KEY,
+  `STORE_NAME` VARCHAR(100) NOT NULL,
+  `STORE_YTD_SALES` DECIMAL(15, 2) DEFAULT 0.00,
+  `REGION_CODE` VARCHAR(50),
+  `ACTIVO` BOOLEAN DEFAULT TRUE,
+  `FECHA_CREACION` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `SUP_ERFICIE_M2` DECIMAL(10, 2),
+  `TIPO_SI_NO` BOOLEAN DEFAULT TRUE,
+  `COLUMNA_UNICA` BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY (`REGION_CODE`) REFERENCES `REGION`(`REGION_CODE`)
+);
+
+-- Crear tabla JOB
+CREATE TABLE IF NOT EXISTS `JOB` (
+  `JOB_CODE` VARCHAR(50) NOT NULL PRIMARY KEY,
+  `JOB_DESCRIPTION` TEXT,
+  `JOB_BASE_PAY` DECIMAL(10, 2),
+  `ACTIVO` BOOLEAN DEFAULT TRUE,
+  `FECHA_CREACION` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `TIPO_LISTA` ENUM('Gerente', 'Vendedor', 'Cajero', 'Supervisor') DEFAULT 'Vendedor',
+  `COLUMNA_UNICA` BOOLEAN DEFAULT FALSE
+);
+
+-- Crear tabla EMPLOYEE
+CREATE TABLE IF NOT EXISTS `EMPLOYEE` (
+  `EMP_CODE` VARCHAR(50) NOT NULL PRIMARY KEY,
+  `EMP_TITLE` VARCHAR(50),
+  `EMP_LNAME` VARCHAR(100),
+  `EMP_FNAME` VARCHAR(100),
+  `EMP_INITIAL` VARCHAR(10),
+  `EMP_DOB` DATE,
+  `JOB_CODE` VARCHAR(50),
+  `STORE_CODE` VARCHAR(50),
+  `ACTIVO` BOOLEAN DEFAULT TRUE,
+  `FECHA_INGRESO` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `SALARIO` DECIMAL(10, 2),
+  `TIPO_SI_NO` BOOLEAN DEFAULT TRUE,
+  `COLUMNA_UNICA` BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY (`JOB_CODE`) REFERENCES `JOB`(`JOB_CODE`),
+  FOREIGN KEY (`STORE_CODE`) REFERENCES `STORE`(`STORE_CODE`)
+);
+
+-- Insertar 10 registros en REGION
+INSERT INTO `REGION` (`REGION_CODE`, `REGION_DESCRIPT`, `ACTIVO`, `FECHA_CREACION`, `TIPO_LISTA`, `COLUMNA_UNICA`) 
+VALUES 
+('R001', 'Región Norte de la empresa', TRUE, NOW(), 'Norte', FALSE),
+('R002', 'Región Sur de la empresa', TRUE, NOW(), 'Sur', FALSE),
+('R003', 'Región Este de la empresa', TRUE, NOW(), 'Este', FALSE),
+('R004', 'Región Oeste de la empresa', TRUE, NOW(), 'Oeste', FALSE),
+('R005', 'Región Central', TRUE, NOW(), 'Norte', FALSE),
+('R006', 'Región Metropolitana', TRUE, NOW(), 'Este', FALSE),
+('R007', 'Región Fronteriza', TRUE, NOW(), 'Sur', FALSE),
+('R008', 'Región Industrial', TRUE, NOW(), 'Oeste', FALSE),
+('R009', 'Región Costera', TRUE, NOW(), 'Este', FALSE),
+('R010', 'Región Montañosa', TRUE, NOW(), 'Norte', FALSE);
+
+-- Insertar 10 registros en STORE
+INSERT INTO `STORE` (`STORE_CODE`, `STORE_NAME`, `STORE_YTD_SALES`, `REGION_CODE`, `ACTIVO`, `FECHA_CREACION`, `SUP_ERFICIE_M2`, `TIPO_SI_NO`, `COLUMNA_UNICA`) 
+VALUES 
+('S001', 'Tienda A', 50000.00, 'R001', TRUE, NOW(), 250.50, TRUE, FALSE),
+('S002', 'Tienda B', 60000.00, 'R002', TRUE, NOW(), 300.00, TRUE, FALSE),
+('S003', 'Tienda C', 70000.00, 'R003', TRUE, NOW(), 350.75, TRUE, FALSE),
+('S004', 'Tienda D', 80000.00, 'R004', TRUE, NOW(), 400.00, TRUE, FALSE),
+('S005', 'Tienda E', 55000.00, 'R005', TRUE, NOW(), 260.00, TRUE, FALSE),
+('S006', 'Tienda F', 62000.00, 'R006', TRUE, NOW(), 310.00, TRUE, FALSE),
+('S007', 'Tienda G', 73000.00, 'R007', TRUE, NOW(), 365.00, TRUE, FALSE),
+('S008', 'Tienda H', 81000.00, 'R008', TRUE, NOW(), 420.00, TRUE, FALSE),
+('S009', 'Tienda I', 67000.00, 'R009', TRUE, NOW(), 295.50, TRUE, FALSE),
+('S010', 'Tienda J', 78000.00, 'R010', TRUE, NOW(), 415.00, TRUE, FALSE);
+
+-- Insertar 10 registros en JOB
+INSERT INTO `JOB` (`JOB_CODE`, `JOB_DESCRIPTION`, `JOB_BASE_PAY`, `ACTIVO`, `FECHA_CREACION`, `TIPO_LISTA`, `COLUMNA_UNICA`) 
+VALUES 
+('J001', 'Responsable de la gestión de la tienda', 2500.00, TRUE, NOW(), 'Gerente', FALSE),
+('J002', 'Encargado de las ventas en la tienda', 1200.00, TRUE, NOW(), 'Vendedor', FALSE),
+('J003', 'Encargado de realizar transacciones de ventas', 1100.00, TRUE, NOW(), 'Cajero', FALSE),
+('J004', 'Supervisor del personal de la tienda', 2000.00, TRUE, NOW(), 'Supervisor', FALSE),
+('J005', 'Asistente de ventas', 1000.00, TRUE, NOW(), 'Vendedor', FALSE),
+('J006', 'Especialista en inventario', 1300.00, TRUE, NOW(), 'Cajero', FALSE),
+('J007', 'Gerente de operaciones', 2600.00, TRUE, NOW(), 'Gerente', FALSE),
+('J008', 'Representante de atención al cliente', 1100.00, TRUE, NOW(), 'Vendedor', FALSE),
+('J009', 'Supervisor nocturno', 2100.00, TRUE, NOW(), 'Supervisor', FALSE),
+('J010', 'Encargado de logística', 1500.00, TRUE, NOW(), 'Supervisor', FALSE);
+
+-- Insertar 10 registros en EMPLOYEE
+INSERT INTO `EMPLOYEE` (`EMP_CODE`, `EMP_TITLE`, `EMP_LNAME`, `EMP_FNAME`, `EMP_INITIAL`, `EMP_DOB`, `JOB_CODE`, `STORE_CODE`, `ACTIVO`, `FECHA_INGRESO`, `SALARIO`, `TIPO_SI_NO`, `COLUMNA_UNICA`) 
+VALUES 
+('E001', 'Sr.', 'Pérez', 'Juan', 'JP', '1990-05-15', 'J001', 'S001', TRUE, NOW(), 1800.00, TRUE, FALSE),
+('E002', 'Sra.', 'Gómez', 'María', 'MG', '1985-08-25', 'J002', 'S001', TRUE, NOW(), 1000.00, TRUE, FALSE),
+('E003', 'Sr.', 'López', 'Carlos', 'CL', '1992-12-30', 'J003', 'S002', TRUE, NOW(), 850.00, TRUE, FALSE),
+('E004', 'Sra.', 'Martínez', 'Ana', 'AM', '1991-03-20', 'J004', 'S002', TRUE, NOW(), 2000.00, TRUE, FALSE),
+('E005', 'Sr.', 'Díaz', 'Pedro', 'PD', '1988-07-10', 'J005', 'S003', TRUE, NOW(), 1600.00, TRUE, FALSE),
+('E006', 'Sra.', 'Hernández', 'Laura', 'LH', '1994-02-12', 'J006', 'S004', TRUE, NOW(), 950.00, TRUE, FALSE),
+('E007', 'Sr.', 'Ramírez', 'Luis', 'LR', '1986-11-05', 'J007', 'S005', TRUE, NOW(), 2200.00, TRUE, FALSE),
+('E008', 'Sra.', 'González', 'Sofía', 'SG', '1993-04-18', 'J008', 'S006', TRUE, NOW(), 1050.00, TRUE, FALSE),
+('E009', 'Sr.', 'Ortiz', 'Andrés', 'AO', '1987-09-09', 'J009', 'S007', TRUE, NOW(), 1900.00, TRUE, FALSE),
+('E010', 'Sra.', 'Fernández', 'Lucía', 'LF', '1990-01-23', 'J010', 'S008', TRUE, NOW(), 1450.00, TRUE, FALSE);
+
+-- Mejorar consulta de estructura de todas las tablas
+SELECT 
+  TABLE_NAME, 
+  COLUMN_NAME, 
+  COLUMN_TYPE, 
+  IS_NULLABLE, 
+  COLUMN_DEFAULT, 
+  COLUMN_KEY, 
+  EXTRA
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'PLAN_TIENDA_MODIFICADA'
+ORDER BY TABLE_NAME, ORDINAL_POSITION;
